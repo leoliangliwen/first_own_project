@@ -15,10 +15,12 @@ alias ....='cd ..;cd..'
 alias ls='ls -thgF'
 alias rm='rm -i'
 alias read='cat README*'
-alias grep='grep --color=auto'
+alias grep='grep -i --color=auto'
 alias v='vim'
 alias gv='vim'
 alias cl='clear'
+alias cm='chmod 755'
+alias echo='echo -e'
 
 alias gitb='git branch'
 alias gits='git status'
@@ -32,3 +34,6 @@ alias gitp='git push'
 alias gitd='git diff'
 clear
 
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
