@@ -14,7 +14,8 @@ PS1='\n\[\033[0;36m\]\t \[\033[0;32m\]\w\[\e[0;31m\]$(__git_ps1 " (%s)")\n\[\e[0
 
 alias ~='cd ~'
 alias ..='cd ..'
-alias ....='cd ..;cd..'
+alias ....='cd ..;cd ..'
+alias ......='cd ..;cd ..; cd ..'
 alias ls='ls -thgF'
 alias rm='rm -i'
 alias read='cat README*'
