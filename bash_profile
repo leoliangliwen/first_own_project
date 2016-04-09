@@ -25,19 +25,18 @@ alias gv='mvim'
 alias cl='clear'
 alias diff='colordiff'
 alias echo='echo -e'
+alias st='speedtest-cli'
 
+alias gita='git add'
 alias gitb='git branch'
+alias gitc='git commit -a -m'
+alias gitd='git diff'
 alias gits='git status'
 alias gitl='git log'
-alias gita='git add'
-alias gitr='git rm'
-alias gitc='git commit -a -m'
-alias gitt='git tag'
-alias gitm='git merge'
-alias gitp='git push'
-alias gitd='git diff'
-clear
 
 if [ -f ~/.git-completion.bash ]; then
   . ~/.git-completion.bash
 fi
+
+
+clear
