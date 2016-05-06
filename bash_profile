@@ -26,6 +26,7 @@ alias cl='clear'
 alias diff='colordiff'
 alias echo='echo -e'
 alias st='speedtest-cli'
+alias g++='g++ -std=c++11'
 
 alias gita='git add'
 alias gitb='git branch'
