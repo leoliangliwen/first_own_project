@@ -104,18 +104,95 @@ vector<vector<int> > subsetsWithDup( vector<int> &S) {
 }
 // =============================================================================
 
+// http://www.lintcode.com/en/problem/permutations/#
+void permute_helper(vector<vector<int>> &answer,
+                    const vector<int> &nums,
+                    vector<bool> &nums_used,
+                    vector<int> &current)
+{
+    if (current.size() == nums.size())
+    {
+        answer.push_back(current);
+        return;
+    }
+
+    for (int i = 0; i < nums.size(); i++)
+    {
+        if (nums_used[i]) continue;
+
+        current.push_back(nums[i]);
+        nums_used[i] = true;
+        permute_helper(answer, nums, nums_used, current);
+        current.pop_back();
+        nums_used[i] = false;
+    }
+}
+
+vector<vector<int> > permute(vector<int> nums) {
+    vector<vector<int> > answer;
+    if (nums.size() == 0) return answer;
+    sort(nums.begin(), nums.end());
+    vector<int> current;
+    vector<bool> nums_used(nums.size(), false);
+
+    permute_helper(answer, nums, nums_used, current);
+    return answer;
+}
+// =============================================================================
+
+//http://www.lintcode.com/en/problem/permutations-ii/#
+void permuteUnique_helper(vector<vector<int> > &answer,
+                          vector<int> &nums,
+                          vector<bool> &nums_used,
+                          vector<int> &current)
+{
+    if (current.size() == nums.size())
+    {
+        answer.push_back(current);
+        return;
+    }
+
+    for (int i = 0; i < nums.size(); i++)
+    {
+        if (nums_used[i])   continue;
+        current.push_back(nums[i]);
+        nums_used[i] = true;
+        permuteUnique_helper(answer, nums, nums_used, current);
+        current.pop_back();
+        nums_used[i] = false;
+        while (i < nums.size()-1 && nums[i] == nums[i+1]) {
+            i++;
+        }
+    }
+}
+
+vector<vector<int> > permuteUnique(vector<int> &nums) {
+    vector<vector<int> > answer;
+    if (nums.size() == 0) return answer;
+
+    sort(nums.begin(), nums.end());
+    vector<bool> nums_used(nums.size(), false);
+    vector<int> current;
+    permuteUnique_helper(answer, nums, nums_used, current);
+
+    return answer;
+}
+
 int main()
 {
     //std::cout << strStr("", "") << std::endl;
 
-    vector<int> input = {1, 2, 3};
-    print_array_of_array(subsets(input));
+    //vector<int> input = {1, 2, 3};
+    //print_array_of_array(subsets(input));
 
     //vector<int> input = {1, 2, 2};
-    print_array_of_array(subsetsWithDup(input));
+    //print_array_of_array(subsetsWithDup(input));
 
-    //vector<int> input = {1,1,2};
-    //print_array_of_array(permuteUnique(input));
+    //vector<int> input = {1,2,3};
+    //print_array_of_array(permute(input));
+
+    vector<int> input = {1,2,2};
+    print_array_of_array(permuteUnique(input));
 
     return 0;
 }
