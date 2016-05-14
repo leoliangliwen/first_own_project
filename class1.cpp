@@ -3,8 +3,11 @@
 #include<algorithm>
 #include<math.h>
 using namespace std;
+// *************************** Class 1 Binary Search ***************************
+// *************************** Class 1 Binary Search ***************************
+// *************************** Class 1 Binary Search ***************************
 
-// =============================================================================
+// strStr
 // http://www.lintcode.com/en/problem/strstr/
 int strStr(const char *source, const char *target) {
     if (target == NULL || source == NULL) return -1;
@@ -26,7 +29,6 @@ int strStr(const char *source, const char *target) {
     }
     return -1;
 }
-// =============================================================================
 
 void print_array(vector<int> answer)
 {
@@ -46,8 +48,8 @@ void print_array_of_array(vector<vector<int> > answer)
     }
     cout << "}\n";
 }
-// =============================================================================
 
+// Subsets
 // http://www.lintcode.com/en/problem/subsets/#
 void subsets_helper (vector<vector<int>> &answer,
                      const vector<int> &nums,
@@ -73,8 +75,8 @@ vector<vector<int> > subsets(vector<int> &nums) {
     subsets_helper(answer, nums, current, 0);
     return answer;
 }
-// =============================================================================
 
+// Subsets II
 // http://www.lintcode.com/en/problem/subsets-ii/#
 void subsetsWithDup_Helper(vector<vector<int> > &answer,
                            const vector<int> &S,
@@ -102,8 +104,8 @@ vector<vector<int> > subsetsWithDup( vector<int> &S) {
     subsetsWithDup_Helper(answer, S_copy, current, 0);
     return answer;
 }
-// =============================================================================
 
+// Permutations
 // http://www.lintcode.com/en/problem/permutations/#
 void permute_helper(vector<vector<int>> &answer,
                     const vector<int> &nums,
@@ -138,9 +140,9 @@ vector<vector<int> > permute(vector<int> nums) {
     permute_helper(answer, nums, nums_used, current);
     return answer;
 }
-// =============================================================================
 
-//http://www.lintcode.com/en/problem/permutations-ii/#
+// Permutations II
+// http://www.lintcode.com/en/problem/permutations-ii/#
 void permuteUnique_helper(vector<vector<int> > &answer,
                           vector<int> &nums,
                           vector<bool> &nums_used,
@@ -180,19 +182,5 @@ vector<vector<int> > permuteUnique(vector<int> &nums) {
 
 int main()
 {
-    //std::cout << strStr("", "") << std::endl;
-
-    //vector<int> input = {1, 2, 3};
-    //print_array_of_array(subsets(input));
-
-    //vector<int> input = {1, 2, 2};
-    //print_array_of_array(subsetsWithDup(input));
-
-    //vector<int> input = {1,2,3};
-    //print_array_of_array(permute(input));
-
-    vector<int> input = {1,2,2};
-    print_array_of_array(permuteUnique(input));
-
-    return 0;
+    return 1;
 }
