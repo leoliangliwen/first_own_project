@@ -32,6 +32,8 @@ class Duck
 class MallardDuck: public Duck
 {
     FlyWithWings flyWithWings;
+    // hide setFlyBehavior in child class
+    void setFlyBehavior() {cout << "MallardDuck cannot set fly behavior.\n";}
   public:
     MallardDuck(): Duck(&flyWithWings){}
 };
@@ -39,6 +41,8 @@ class MallardDuck: public Duck
 class RubberDuck: public Duck
 {
     FlyNoWay flyNoWay;
+    // hide setFlyBehavior in child class
+    void setFlyBehavior() {cout << "RubberDuck cannot set fly behavior.\n";}
   public:
     RubberDuck(): Duck(&flyNoWay){}
 };
@@ -46,14 +50,24 @@ class RubberDuck: public Duck
 
 int main ()
 {
-    cout << "haha" << endl;
+    cout << "duck1\n";
     Duck *d1 = new MallardDuck ;
     d1->performFly();
 
+    cout << "duck2\n";
     Duck *d2 = new RubberDuck;
     d2->performFly();
-    d2->setFlyBehavior(new FlyWithWings);
+    // Duck pointer CAN change fly behavior
+    d2->setFlyBehavior(new FlyWithWings); 
     d2->performFly();
+    
+    cout << "duck3\n";
+    RubberDuck *d3 = new RubberDuck;
+    d3->performFly();
+    // RubberDuck pointer CANNOT change fly behavior
+    //d3->setFlyBehavior(new FlyWithWings);
+    //d3->performFly();
+
 
     
     return 1;
