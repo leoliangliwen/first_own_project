@@ -12,6 +12,7 @@ class Beverage
     virtual double cost() = 0;
     void setSize(int sizeIn) {size = sizeIn;}
     int getSize() {return size;}
+    virtual ~Beverage() {};
 };
 
 class Espresso: public Beverage
@@ -90,12 +91,15 @@ int main ()
     cout << whip1.cost() << endl;
     */
 
-    Beverage *b1 = new Espresso;
+    Espresso espresso;
+    Beverage *b1 = &espresso;
     Beverage *b2 = new SoyMilk(b1);
     cout << b2->cost() << endl;
+    delete b2;
     Beverage *b3 = new SoyMilk(b1);
     b3->setSize(24);
     b3->setSize(16);
     cout << b3->cost() << endl;
+    delete b3;
     return 1;
 }

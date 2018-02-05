@@ -6,6 +6,7 @@ class FlyBehavior   // flying interface
 {
   public:
     virtual void fly() = 0;
+    virtual ~FlyBehavior() {};
 };
 
 class FlyWithWings : public FlyBehavior
@@ -27,6 +28,7 @@ class Duck
     void display() {cout << "displayDuck\n";}
     void performFly() {flyBehavior->fly();}
     void setFlyBehavior(FlyBehavior *flyBehaviorIn) {flyBehavior = flyBehaviorIn;}
+    virtual ~Duck() {};
 };
 
 class MallardDuck: public Duck
@@ -53,6 +55,7 @@ int main ()
     cout << "duck1\n";
     Duck *d1 = new MallardDuck ;
     d1->performFly();
+    delete d1;
 
     cout << "duck2\n";
     Duck *d2 = new RubberDuck;
@@ -60,6 +63,7 @@ int main ()
     // Duck pointer CAN change fly behavior
     d2->setFlyBehavior(new FlyWithWings); 
     d2->performFly();
+    delete d2;
     
     cout << "duck3\n";
     RubberDuck *d3 = new RubberDuck;
@@ -67,6 +71,7 @@ int main ()
     // RubberDuck pointer CANNOT change fly behavior
     //d3->setFlyBehavior(new FlyWithWings);
     //d3->performFly();
+    delete d3;
 
 
     
