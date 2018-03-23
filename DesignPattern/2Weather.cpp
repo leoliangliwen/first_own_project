@@ -41,10 +41,12 @@ class WeatherData: public Subject
     void removeObserver(Observer *observerIn) {observers.erase(observerIn);}
     void notifyObservers() 
     {
+        cout << "Start display:" << endl;
         for (auto it = observers.begin(); it != observers.end(); it++)
         {
             (*it)->update(temperature, humidity);
         }
+        cout << "End display" << endl << endl << endl;
         changed = false;
     }
 };
@@ -65,7 +67,11 @@ class CurrentConditionsDisplay: public Observer, public DisplayElement
     CurrentConditionsDisplay(Subject* subjectIn)
     {
         subject = subjectIn;
-        subjectIn->registerObserver(this);
+        subject->registerObserver(this);
+    }
+    ~CurrentConditionsDisplay()
+    {
+        subject->removeObserver(this);
     }
     void update(float temperatureIn, float humidityIn) 
     {
@@ -77,7 +83,7 @@ class CurrentConditionsDisplay: public Observer, public DisplayElement
     {
         cout << "Displaying in CurrentConditionDisplay:\n" 
              << "Temperature: " << temperature 
-             << ", Humidity: " << humidity << endl << endl;
+             << ", Humidity: " << humidity << endl;
     }
 };
 
@@ -91,7 +97,11 @@ class StatisticsDisplay: public Observer, public DisplayElement
     StatisticsDisplay(Subject* subjectIn)
     {
         subject = subjectIn;
-        subjectIn->registerObserver(this);
+        subject->registerObserver(this);
+    }
+    ~StatisticsDisplay()
+    {
+        subject->removeObserver(this);
     }
     void update(float temperatureIn, float humidityIn) 
     {
@@ -112,7 +122,7 @@ class StatisticsDisplay: public Observer, public DisplayElement
         {
             cout << *i << ", ";
         }
-        cout << endl << endl;
+        cout << endl;
     }
 };
 
@@ -126,7 +136,11 @@ class NewDisplay: public Observer, public DisplayElement
     NewDisplay(Subject* subjectIn)
     {
         subject = subjectIn;
-        subjectIn->registerObserver(this);
+        subject->registerObserver(this);
+    }
+    ~NewDisplay()
+    {
+        subject->removeObserver(this);
     }
     void update(float temperatureIn, float humidityIn) 
     {
@@ -138,7 +152,7 @@ class NewDisplay: public Observer, public DisplayElement
     {
         cout << "Displaying in NewDisplay:\n" 
              << "Temperature: " << temperature 
-             << ", Humidity: " << humidity << endl << endl;
+             << ", Humidity: " << humidity << endl;
     }
 };
 
@@ -146,9 +160,11 @@ int main ()
 {
     WeatherData weatherData;
     
-    CurrentConditionsDisplay currentConditionsDisplay(&weatherData);
+    {
+        CurrentConditionsDisplay* p = new CurrentConditionsDisplay(&weatherData);
+    }
     StatisticsDisplay statisticsDisplay(&weatherData);
-    NewDisplay newDisplay(&weatherData);
+    // NewDisplay newDisplay(&weatherData);
 
     weatherData.setMeasurements(1.0, 2.0);
     weatherData.setMeasurements(11.0, 22.0);
