@@ -67,8 +67,9 @@ void printCoffee(Beverage *b)
 }
 int main ()
 {
-    Beverage *b1 = new Espresso();
-    printCoffee(b1);
+    Espresso b1;
+    printCoffee(&b1);
+    /*
     Beverage *b2 = new SoyMilk(b1);
     printCoffee(b2);
     Beverage *b3 = new SoyMilk(b2);
@@ -76,5 +77,6 @@ int main ()
     delete b1;
     Beverage *b4 = new Whip(b3);
     printCoffee(b4);
+    */
     return 1;
 }
