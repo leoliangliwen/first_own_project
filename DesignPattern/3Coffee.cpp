@@ -5,101 +5,76 @@ using namespace std;
 
 class Beverage
 {
+  protected:
     string description = "unknown";
-    int size = 16;
   public:
     virtual string getDescription() {return description;} 
     virtual double cost() = 0;
-    void setSize(int sizeIn) {size = sizeIn;}
-    int getSize() {return size;}
     virtual ~Beverage() {};
 };
 
 class Espresso: public Beverage
 {
-    string description = "Espresso";
   public:
-    string getDescription() {return description;} 
+    Espresso() {description = "Espresso";}
     double cost() {return 1.99;}
 };
 
 class HouseBlend: public Beverage
 {
-    string description = "House Blend";
   public:
-    string getDescription() {return description;} 
+    HouseBlend() {description = "House Blend";}
     double cost() {return 0.89;}
 };
 
 
 class Condiment: public Beverage
 {
+    Beverage *beverage;
   public:
-    virtual string getDescription() = 0; 
-    virtual double cost() = 0;
+    Condiment(Beverage *beverageIn) {beverage = beverageIn;}
+    string getDescription() {return beverage->getDescription();}
+    double cost() {return beverage->cost();}
 };
 
 class Mocha: public Condiment
 {
-    Beverage *beverage;
   public:
-    Mocha(Beverage *beverageIn) {beverage = beverageIn;}
-    string getDescription() {return beverage->getDescription() + ", Mocha";}
-    double cost() {return beverage->cost() + 0.99;}
+    Mocha(Beverage *beverageIn) : Condiment(beverageIn) {}
+    string getDescription() {return Condiment::getDescription() + ", Mocha";}
+    double cost() {return Condiment::cost() + 0.99;}
 };
 
 class Whip: public Condiment
 {
-    Beverage *beverage;
   public:
-    Whip(Beverage *beverageIn) {beverage = beverageIn;}
-    string getDescription() {return beverage->getDescription() + ", Whip";}
-    double cost() {return beverage->cost() + 0.2;}
+    Whip(Beverage *beverageIn) : Condiment(beverageIn) {} 
+    string getDescription() {return Condiment::getDescription() + ", Whip";}
+    double cost() {return Condiment::cost()  + 0.2;}
 };
 
 class SoyMilk: public Condiment
 {
-    Beverage *beverage;
   public:
-    SoyMilk(Beverage *beverageIn) {beverage = beverageIn;}
-    string getDescription() {return beverage->getDescription() + ", Whip";}
-    double cost() {
-        cout << "size: " << this->getSize() << endl;
-        if (this->getSize() == 16)
-            return beverage->cost() + 0.4;
-        else if (this->getSize() == 20)
-            return beverage->cost() + 0.6;
-        else // 24
-            return beverage->cost() + 0.8;
-    }
+    SoyMilk(Beverage *beverageIn) : Condiment(beverageIn) {}
+    string getDescription() {return Condiment::getDescription() + ", SoyMilk";}
+    double cost() {return Condiment::cost()  + 0.4;}
 };
 
+void printCoffee(Beverage *b)
+{
+    cout << b->getDescription() << ": $" << b->cost() << endl;
+}
 int main ()
 {
-    /*
-    HouseBlend houseBlend;
-    cout << houseBlend.getDescription() << endl;
-    cout << houseBlend.cost() << endl;
-    Mocha mocha(&houseBlend);
-    cout << mocha.getDescription() << endl;
-    cout << mocha.cost() << endl;
-    Whip whip(&mocha);
-    cout << whip.getDescription() << endl;
-    cout << whip.cost() << endl;
-    Whip whip1(&whip);
-    cout << whip1.getDescription() << endl;
-    cout << whip1.cost() << endl;
-    */
-
-    Espresso espresso;
-    Beverage *b1 = &espresso;
+    Beverage *b1 = new Espresso();
+    printCoffee(b1);
     Beverage *b2 = new SoyMilk(b1);
-    cout << b2->cost() << endl;
-    delete b2;
-    Beverage *b3 = new SoyMilk(b1);
-    b3->setSize(24);
-    b3->setSize(16);
-    cout << b3->cost() << endl;
-    delete b3;
+    printCoffee(b2);
+    Beverage *b3 = new SoyMilk(b2);
+    printCoffee(b3);
+    delete b1;
+    Beverage *b4 = new Whip(b3);
+    printCoffee(b4);
     return 1;
 }
