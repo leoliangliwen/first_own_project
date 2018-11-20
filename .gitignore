@@ -28,4 +28,4 @@
 *.app
 
 # temp file by vim/gvim
-*.swp
+*.sw?

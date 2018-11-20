@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -7,9 +8,12 @@ class Beverage
 {
   protected:
     string description = "unknown";
+    int size = 16;
   public:
     virtual string getDescription() {return description;} 
     virtual double cost() = 0;
+    void setSize(int s) {size = s;}
+    int getSize() {return size;}
     virtual ~Beverage() {};
 };
 
@@ -58,25 +62,36 @@ class SoyMilk: public Condiment
   public:
     SoyMilk(Beverage *beverageIn) : Condiment(beverageIn) {}
     string getDescription() {return Condiment::getDescription() + ", SoyMilk";}
-    double cost() {return Condiment::cost()  + 0.4;}
+    double cost() {
+        if (Beverage::getSize() == 16)
+            return Condiment::cost()  + 0.4;
+        else if (Beverage::getSize() == 20)
+            return Condiment::cost()  + 0.8;
+        else if (Beverage::getSize() == 24)
+            return Condiment::cost()  + 1.2;
+        else
+            return Condiment::cost();
+
+    }
 };
 
 void printCoffee(Beverage *b)
 {
-    cout << b->getDescription() << ": $" << b->cost() << endl;
+    cout << b->getSize() << "oz " << b->getDescription() << ": $" << b->cost() << endl;
 }
 int main ()
 {
-    Espresso b1;
-    printCoffee(&b1);
-    /*
+    Beverage *b1 = new Espresso();
     Beverage *b2 = new SoyMilk(b1);
-    printCoffee(b2);
     Beverage *b3 = new SoyMilk(b2);
-    printCoffee(b3);
-    delete b1;
     Beverage *b4 = new Whip(b3);
-    printCoffee(b4);
-    */
+    Beverage *b5 = new SoyMilk(b4);
+
+    printCoffee(b5);
+    b5->setSize(20);
+    printCoffee(b5);
+    b5->setSize(24);
+    printCoffee(b5);
+
     return 1;
 }

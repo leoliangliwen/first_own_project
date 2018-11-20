@@ -32,17 +32,15 @@ class PepperoniPizza: public Pizza
 class SimplePizzaFactory
 {
   public:
-    Pizza createPizza(string type)
+    static Pizza* createPizza(string type)
     {
         if (type == "cheese")
         {
-            CheesePizza cheesePizza;
-            return cheesePizza;
+            return new CheesePizza;
         }
         else
         {
-            PepperoniPizza pepperoniPizza;
-            return pepperoniPizza;
+            return new PepperoniPizza;
         }
     }
 };
@@ -51,23 +49,21 @@ class PizzaStore
 {
     SimplePizzaFactory* pizzaFactory;
   public:
-    PizzaStore(SimplePizzaFactory* pizzaFactoryIn) {pizzaFactory = pizzaFactoryIn;}
-    Pizza orderPizza(string type)
+    Pizza* orderPizza(string type)
     {
-        Pizza pizza = pizzaFactory->createPizza(type);
+        Pizza* pizza = SimplePizzaFactory::createPizza(type);
 
-        pizza.prepare();
-        pizza.bake();
-        pizza.cut();
-        pizza.box();
+        pizza->prepare();
+        pizza->bake();
+        pizza->cut();
+        pizza->box();
         return pizza;
     }
 };
 
 int main ()
 {
-    SimplePizzaFactory pizzaFactoryIn;
-    PizzaStore store(&pizzaFactoryIn);
+    PizzaStore store;
     store.orderPizza("cheese");
     return 1;
 }

@@ -1,121 +1,94 @@
 #include<iostream>
 #include<vector>
 #include<algorithm>
+#include<set>
+#include<stack>
+#include<unordered_set>
+#include<map>
+#include<unordered_map>
+#include<queue>
 #include<math.h>
 using namespace std;
 
-// =============================================================================
-// http://www.lintcode.com/en/problem/strstr/
-int strStr(const char *source, const char *target) {
-    if (target == NULL || source == NULL) return -1;
-    if (*target == '\0') return 0;
-    for (int index_source = 0; *(source + index_source) != '\0'; index_source++)
-    {
-        for (int index_target = 0;
-             *(target + index_target) != '\0'
-             && *(source + index_source + index_target) != '\0';
-             index_target++)
-        {
-            if (*(target + index_target) != *(source + index_source + index_target)) {
-                break;
-            }
-            if (*(target + index_target + 1) == '\0') {
-                return index_source;
-            }
+vector<int> calculateNext(const string& p) {
+    vector<int> next(p.size(), -1);
+    for (int j = 0 ; j < p.size()-1; j++) {
+        int k = next[j];
+        while (k != -1 && p[k] != p[j]) {
+            k = next[k];
+        }
+        if (p[j+1] != p[k+1])
+            next[j+1] = k+1;
+        else
+            next[j+1] = next[k];
+    }
+    return next;
+
+    /*
+    vector<int> max(p.size(), 0);
+    for (int j = 1 ; j < p.size(); j++) {
+        int k = max[j-1];
+        while (k != 0 && p[k] != p[j]) {
+            k = max[k];
+        }
+        if (p[j] == p[k])
+            max[j] = k+1;
+        else
+            max[j] = k;
+    }
+    return max;
+    */
+ 
+}
+
+int substr(string text, string pattern) {
+    vector<int> next= calculateNext(pattern);
+    cout << endl;
+    for (auto i : next)
+        cout << i;
+    cout << endl;
+    int i = 0;
+    int j = 0;
+    while(i < (int)text.size() && j < (int) pattern.size()) {
+        cout << i << "," <<  j << endl;
+        if (j == -1 || text[i] == pattern[j]) {
+            cout << 'a' << endl;
+            i++;
+            j++;
+        }
+        else {
+            cout << 'b' << endl;
+            j = next[j]; 
         }
     }
-    return -1;
-}
-// =============================================================================
 
-void print_array(vector<int> answer)
-{
-    cout << "<";
-    for (int i = 0; i < answer.size(); i++) {
-            std::cout << answer[i];
-    }
-    cout << ">\n";
-}
-
-void print_array_of_array(vector<vector<int> > answer)
-{
-    cout << "{\n";
-    for (int i = 0; i < answer.size(); i++) {
-        cout << "     ";
-        print_array(answer[i]);
-    }
-    cout << "}\n";
-}
-// =============================================================================
-
-// http://www.lintcode.com/en/problem/subsets/#
-void subsets_helper (vector<vector<int>> &answer,
-                     const vector<int> &nums,
-                     vector<int> &current,
-                     int start_index)
-{
-    answer.push_back(current);
-    for (int i = start_index; i < nums.size(); i++)
-    {
-        current.push_back(nums[i]);
-        subsets_helper(answer, nums, current, i+1);
-        current.pop_back();
-    }
-}
-
-vector<vector<int> > subsets(vector<int> &nums) {
-    vector<vector<int> > answer;
-    if (nums.size() == 0) return answer;
-
-    sort(nums.begin(), nums.end());
-
-    vector<int> current;
-    subsets_helper(answer, nums, current, 0);
-    return answer;
-}
-// =============================================================================
-
-// http://www.lintcode.com/en/problem/subsets-ii/#
-void subsetsWithDup_Helper(vector<vector<int> > &answer,
-                           const vector<int> &S,
-                           vector<int> &current,
-                           int start_index)
-{
-    answer.push_back(current);
-    for (int i = start_index; i < S.size(); i++)
-    {
-        if (i != start_index && S[i] == S[i-1]) continue;
-        current.push_back(S[i]);
-        subsetsWithDup_Helper(answer, S, current, i + 1);
-        current.pop_back();
-    }
+    if (j == pattern.size())
+        return i-j;
+    else
+        return -1;
 
 }
-
-vector<vector<int> > subsetsWithDup( vector<int> &S) {
-    vector<vector<int> > answer;
-
-    vector<int> S_copy{S};
-    sort(S_copy.begin(), S_copy.end());
-    vector<int> current;
-
-    subsetsWithDup_Helper(answer, S_copy, current, 0);
-    return answer;
-}
-// =============================================================================
 
 int main()
 {
-    //std::cout << strStr("", "") << std::endl;
-
-    vector<int> input = {1, 2, 3};
-    print_array_of_array(subsets(input));
-
-    //vector<int> input = {1, 2, 2};
-    print_array_of_array(subsetsWithDup(input));
-
-    //vector<int> input = {1,1,2};
-    //print_array_of_array(permuteUnique(input));
+    //cout << substr("aaac", "aac");
+    /*
+    vector<int> next= calculateNext("abab");
+    cout << endl;
+    for (auto i : next)
+        cout << i << " ";
+    cout << endl;
+    */
+    set<int> s;
+    s.insert(5);
+    s.insert(8);
+    s.insert(4);
+    s.insert(9);
+    s.insert(6);
+    auto it = s.find(4);
+    cout << *it << endl;
+    it-=1;
+    cout << *it << endl;
 
     return 0;
 }
