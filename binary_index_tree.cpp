@@ -10,7 +10,7 @@ class BinaryIndexTree {
     vector<int> num;
 
     int lowbit(int x) { 
-        return x & (-x); 
+        return x & (~x+1); 
     }
 
 public:

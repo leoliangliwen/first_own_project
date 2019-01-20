@@ -68,8 +68,18 @@ void heapSort(vector<int>& array) {
 
 int main()
 {
-    cout << -3 / 5  << -3 % 5<< endl;
-    cout << -8 / 5 << -8 % 5 << endl;
+    unordered_map<int, int> m;
+    cout << m[3] << endl;
+    cout << m.size() << endl;
+    m[0]++;
+    cout << m[0] << endl;
+    cout << m.size() << endl;
+    return 1;
 
+    vector<int> a {5,3,1,4,2};
+    heapSort(a);
+    for (auto i : a) {
+        cout << i << endl;
+    }
     return 0;
 }
