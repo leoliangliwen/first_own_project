@@ -10,66 +10,59 @@
 #include<math.h>
 using namespace std;
 
-void print(vector<int>& array) {
-    for (auto i : array)
-        cout << i;
-    cout << endl;
+string covertToBinary(int n) {
+    if (n == 0)
+        return "0";
+    string answer;
+    while(n) {
+        int mode = n % 2;
+        answer += mode + '0';
+        n /= 2;
+    }
+    reverse(answer.begin(), answer.end());
+    return answer;
 }
 
-void swap(vector<int>& array, int i, int j) {
-    int temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
+int binaryToInt(string s) {
+    int answer = 0;
+    for (int i = 0; i < s.size(); i++) {
+        answer = answer * 2 + (s[i] - '0');
+    }
+    return answer;
 }
 
-void heapify(vector<int>& array, int index, int end) {
-    cout << index << end << endl;
-    print(array);
-    if (index > end)
-        return;
+int nextSparseNumber(int n) {
+    string binary = covertToBinary(n);
+    int carry = 0;
+    for (int i = binary.size() - 2; i >= 0; i--) {
+        int curr = binary[i] - '0' + carry;
+        if (curr == 2) {
+            curr = 0;
+            carry = 1;
+        }
+        else {
+            carry = 0;
+        }
+        binary[i] = '0' + curr;
 
-    int largest = index;
-    int l = index * 2 + 1;
-    if (l <= end && array[l] > array[largest]) {
-        largest = l;
+        if (binary[i] == '1' && binary[i+1] == '1') {
+            binary[i] = '0';
+            carry = 1;
+        }
     }
-    int r = index * 2 + 2;
-    if (r <= end && array[r] > array[largest]) {
-        largest = r;
-    }
+    if (carry == 1)
+        binary = "1" + binary;
 
-    if (largest != index) {
-        swap(array, index, largest);
-        heapify(array, largest, end);
-    }
-}
-
-void heapSort(vector<int>& array) {
-    for (int i = array.size()/2; i >= 0; i--) {
-        heapify(array, i, array.size() - 1);
-    }
-        cout << "Before: ";
-        print(array);
-
-
-    for (int i = array.size()-1; i >= 0; i--) {
-        cout << "Start: ";
-        print(array);
-
-        swap(array, i, 0);
-        cout << "After swap: ";
-        print(array);
-
-        heapify(array, 0, i-1);
-        cout << "After heap: ";
-        print(array);
-    }
+    return binaryToInt(binary);
 }
 
 int main()
 {
-    cout << -3 / 5  << -3 % 5<< endl;
-    cout << -8 / 5 << -8 % 5 << endl;
+    cout << covertToBinary(44) << endl;
+    int next = nextSparseNumber(44);
+    cout << covertToBinary(next) << endl;
+
 
     return 0;
 }
+
