@@ -19,21 +19,21 @@ colorscheme darkblue
 set backspace=2
 set backspace=indent,eol,start
 set nu
-set ai
 set colorcolumn=80
 
 set hlsearch
 
 
 
+set ttyfast "indicate a fast terminal connection"
+
 "mouse
-set ttyfast
-set mouse=a
-set ttymouse=xterm2
+set mouse=a "enable mouse"
+set ttymouse=xterm2 "mouse behavior as xterm2"
 
 set autoindent
 set cindent
-set laststatus=2
+set laststatus=2 "last window will always have status line"
 set statusline=
 set statusline+=%1*\ %<%F
 set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)
