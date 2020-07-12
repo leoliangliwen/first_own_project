@@ -11,64 +11,71 @@ class FlyBehavior   // flying interface
 
 class FlyWithWings : public FlyBehavior
 {
-    void fly() {cout << "flying with wings\n";}
+    void fly() {cout << "I'm flying with wings\n";}
 };
 
 class FlyNoWay : public FlyBehavior
 {
-    void fly() {cout << "cannot fly\n";}
+    void fly() {cout << "I cannot fly\n";}
 };
 
 class Duck 
 {
+  protected:
     FlyBehavior *flyBehavior;
   public:
-    Duck(FlyBehavior *flyBehaviorIn) {flyBehavior = flyBehaviorIn;}
-    void swim() {cout << "swiming\n";}
-    void display() {cout << "displayDuck\n";}
+    virtual void display() = 0;
     void performFly() {flyBehavior->fly();}
-    void setFlyBehavior(FlyBehavior *flyBehaviorIn) {flyBehavior = flyBehaviorIn;}
+    virtual void setFlyBehavior(FlyBehavior *flyBehaviorIn) {
+        flyBehavior = flyBehaviorIn;
+    }
     virtual ~Duck() {};
 };
 
 class MallardDuck: public Duck
 {
-    FlyWithWings flyWithWings;
     // hide setFlyBehavior in child class
-    void setFlyBehavior() {cout << "MallardDuck cannot set fly behavior.\n";}
+    void setFlyBehavior(FlyBehavior *flyBehaviorIn) {
+        cout << "MallardDuck cannot set fly behavior.\n";
+    }
   public:
-    MallardDuck(): Duck(&flyWithWings){}
+    MallardDuck() {flyBehavior = new FlyWithWings();}
+    ~MallardDuck() {delete flyBehavior;}
+    void display() {cout << "\nI'm a Mallard Duck\n";}
 };
 
 class RubberDuck: public Duck
 {
-    FlyNoWay flyNoWay;
     // hide setFlyBehavior in child class
-    void setFlyBehavior() {cout << "RubberDuck cannot set fly behavior.\n";}
+    void setFlyBehavior(FlyBehavior *flyBehaviorIn) {
+        cout << "RubberDuck cannot set fly behavior.\n";
+    }
   public:
-    RubberDuck(): Duck(&flyNoWay){}
+    RubberDuck() {flyBehavior = new FlyNoWay();}
+    ~RubberDuck() {delete flyBehavior;}
+    void display() {cout << "\nI'm a Rubber Duck\n";}
 };
 
 
 int main ()
 {
-    cout << "duck1\n";
     Duck *d1 = new MallardDuck ;
+    d1->display();
     d1->performFly();
     delete d1;
 
-    cout << "duck2\n";
     Duck *d2 = new RubberDuck;
+    d2->display();
     d2->performFly();
-    // Duck pointer CAN change fly behavior
+    // Duck pointer CANNOT change fly behavior
     d2->setFlyBehavior(new FlyWithWings); 
     d2->performFly();
     delete d2;
     
-    cout << "duck3\n";
     RubberDuck *d3 = new RubberDuck;
+    d3->display();
     d3->performFly();
-    // RubberDuck pointer CANNOT change fly behavior
+    // RubberDuck pointer CANNOT call setFlyBehavior because it is hidden.
     //d3->setFlyBehavior(new FlyWithWings);
     //d3->performFly();
     delete d3;
