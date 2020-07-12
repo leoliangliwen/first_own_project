@@ -80,7 +80,5 @@ int main ()
     //d3->performFly();
     delete d3;
 
-
-    
     return 1;
 }

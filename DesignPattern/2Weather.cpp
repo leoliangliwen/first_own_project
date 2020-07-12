@@ -10,20 +10,11 @@ class Observer
     virtual void update(float temp, float humidity) = 0;
 };
 
-class Subject
-{
-  public:
-    virtual void registerObserver(Observer *observerIn) = 0;
-    virtual void removeObserver(Observer *observerIn) = 0;
-    virtual void notifyObservers() = 0;
-};
-
-class WeatherData: public Subject
+class WeatherData
 {
     set<Observer *> observers;
     float temperature;
     float humidity;
-    bool changed;
 
   public:
     float getTemperature() {return temperature;}
@@ -33,7 +24,6 @@ class WeatherData: public Subject
         temperature = temperatureIn;
         humidity = humidityIn;
         measurementsChanged();
-        changed = true;
     }
     void measurementsChanged() {notifyObservers();}
 
@@ -41,13 +31,12 @@ class WeatherData: public Subject
     void removeObserver(Observer *observerIn) {observers.erase(observerIn);}
     void notifyObservers() 
     {
-        cout << "Start display:" << endl;
+        cout << "Start display=================" << endl;
         for (auto it = observers.begin(); it != observers.end(); it++)
         {
             (*it)->update(temperature, humidity);
         }
         cout << "End display" << endl << endl << endl;
-        changed = false;
     }
 };
 
@@ -57,19 +46,19 @@ class DisplayElement
     virtual void display() = 0;
 };
 
-class CurrentConditionsDisplay: public Observer, public DisplayElement
+class CurrentDisplay: public Observer, public DisplayElement
 {
-    Subject* subject;
+    WeatherData* subject;
     float temperature;
     float humidity;
 
   public:
-    CurrentConditionsDisplay(Subject* subjectIn)
+    CurrentDisplay(WeatherData* subjectIn)
     {
         subject = subjectIn;
         subject->registerObserver(this);
     }
-    ~CurrentConditionsDisplay()
+    ~CurrentDisplay()
     {
         subject->removeObserver(this);
     }
@@ -81,78 +70,92 @@ class CurrentConditionsDisplay: public Observer, public DisplayElement
     }
     void display() 
     {
-        cout << "Displaying in CurrentConditionDisplay:\n" 
+        cout << "\nDisplaying in CurrentWeatherDisplay:\n" 
              << "Temperature: " << temperature 
-             << ", Humidity: " << humidity << endl;
+             << ", Humidity: " << humidity << endl << endl;
     }
 };
 
-class StatisticsDisplay: public Observer, public DisplayElement
+class HistoryWeatherDisplay: public Observer, public DisplayElement
 {
-    Subject* subject;
-    vector<float> temperature;
-    vector<float> humidity;
+    WeatherData* subject;
+    vector<float> temperatures;
+    vector<float> humiditys;
 
   public:
-    StatisticsDisplay(Subject* subjectIn)
+    HistoryWeatherDisplay(WeatherData* subjectIn)
     {
         subject = subjectIn;
         subject->registerObserver(this);
     }
-    ~StatisticsDisplay()
+    ~HistoryWeatherDisplay()
     {
         subject->removeObserver(this);
     }
     void update(float temperatureIn, float humidityIn) 
     {
-        temperature.push_back(temperatureIn);
-        humidity.push_back(humidityIn);
+        temperatures.push_back(temperatureIn);
+        humiditys.push_back(humidityIn);
         display();
     }
     void display() 
     {
-        cout << "Displaying in StatisticsDisplay:\n";
+        cout << "\nDisplaying in HistoryWeatherDisplay:\n";
         cout << "Temperature: "; 
-        for (auto i = temperature.begin(); i != temperature.end(); i++)
+        for (auto i = temperatures.begin(); i != temperatures.end(); i++)
         {
             cout << *i << ", ";
         }
         cout << "humidity: "; 
-        for (auto i = humidity.begin(); i != humidity.end(); i++)
+        for (auto i = humiditys.begin(); i != humiditys.end(); i++)
         {
             cout << *i << ", ";
         }
-        cout << endl;
+        cout << endl << endl;
     }
 };
 
-class NewDisplay: public Observer, public DisplayElement
+class ForecastDisplay: public Observer, public DisplayElement
 {
-    Subject* subject;
-    float temperature;
-    float humidity;
+    WeatherData* subject;
+    vector<float> temperatures;
+    vector<float> humiditys;
 
   public:
-    NewDisplay(Subject* subjectIn)
+    ForecastDisplay(WeatherData* subjectIn)
     {
         subject = subjectIn;
         subject->registerObserver(this);
     }
-    ~NewDisplay()
+    ~ForecastDisplay()
     {
         subject->removeObserver(this);
     }
     void update(float temperatureIn, float humidityIn) 
     {
-        temperature = temperatureIn;
-        humidity = humidityIn;
+        temperatures.push_back(temperatureIn);
+        humiditys.push_back(humidityIn);
         display();
     }
     void display() 
     {
-        cout << "Displaying in NewDisplay:\n" 
-             << "Temperature: " << temperature 
-             << ", Humidity: " << humidity << endl;
+        int size = temperatures.size();
+        if (size == 1) {
+            cout << "\nDisplaying in ForecastWeatherDisplay:\n" 
+                << "Temperature: " << temperatures[0]
+                << ", Humidity: " << humiditys[0] << endl << endl;
+        }
+        else {
+            float temperatureforecast = temperatures[size-1] + 
+                                        temperatures[size-1] - 
+                                        temperatures[size-2];
+            float humidityforecast = humiditys[size-1] + 
+                                     humiditys[size-1] - 
+                                     humiditys[size-2];
+            cout << "\nDisplaying in ForecastWeatherDisplay:\n" 
+                << "Temperature: " << temperatureforecast
+                << ", Humidity: " << humidityforecast << endl << endl;
+        }
     }
 };
 
@@ -160,14 +163,13 @@ int main ()
 {
     WeatherData weatherData;
     
-    {
-        CurrentConditionsDisplay* p = new CurrentConditionsDisplay(&weatherData);
-    }
-    StatisticsDisplay statisticsDisplay(&weatherData);
-    // NewDisplay newDisplay(&weatherData);
+    CurrentDisplay currentDisplay(&weatherData);
+    HistoryWeatherDisplay historyDisplay(&weatherData);
+    ForecastDisplay forecastDisplay(&weatherData);
 
-    weatherData.setMeasurements(1.0, 2.0);
-    weatherData.setMeasurements(11.0, 22.0);
+    weatherData.setMeasurements(1.0, 1.0);
+    weatherData.setMeasurements(2.0, 2.0);
+    weatherData.setMeasurements(5.0, 5.0);
     return 1;
 }
 
