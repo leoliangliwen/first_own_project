@@ -6,14 +6,14 @@ using namespace std;
 
 class Beverage
 {
+  int size = 16;
   protected:
     string description = "unknown";
-    int size = 16;
   public:
     virtual string getDescription() {return description;} 
     virtual double cost() = 0;
-    void setSize(int s) {size = s;}
-    int getSize() {return size;}
+    virtual void setSize(int s) {size = s;}
+    virtual int getSize() const {return size;}
     virtual ~Beverage() {};
 };
 
@@ -34,64 +34,61 @@ class HouseBlend: public Beverage
 
 class Condiment: public Beverage
 {
+  protected:
     Beverage *beverage;
   public:
     Condiment(Beverage *beverageIn) {beverage = beverageIn;}
     string getDescription() {return beverage->getDescription();}
     double cost() {return beverage->cost();}
-};
+    void setSize(int s) { beverage->setSize(s);}
+    int getSize() const { return beverage->getSize();}
 
-class Mocha: public Condiment
-{
-  public:
-    Mocha(Beverage *beverageIn) : Condiment(beverageIn) {}
-    string getDescription() {return Condiment::getDescription() + ", Mocha";}
-    double cost() {return Condiment::cost() + 0.99;}
 };
 
 class Whip: public Condiment
 {
   public:
     Whip(Beverage *beverageIn) : Condiment(beverageIn) {} 
-    string getDescription() {return Condiment::getDescription() + ", Whip";}
-    double cost() {return Condiment::cost()  + 0.2;}
+    string getDescription() {
+        return beverage->getDescription() + " with Whip";
+    }
+    double cost() {return beverage->cost() + 0.2;}
 };
 
 class SoyMilk: public Condiment
 {
   public:
-    SoyMilk(Beverage *beverageIn) : Condiment(beverageIn) {}
-    string getDescription() {return Condiment::getDescription() + ", SoyMilk";}
+    SoyMilk(Beverage *beverageIn) : Condiment(beverageIn) {} 
+    string getDescription() {
+        return beverage->getDescription() + " with SoyMilk";
+    }
     double cost() {
-        if (Beverage::getSize() == 16)
-            return Condiment::cost()  + 0.4;
-        else if (Beverage::getSize() == 20)
-            return Condiment::cost()  + 0.8;
-        else if (Beverage::getSize() == 24)
-            return Condiment::cost()  + 1.2;
-        else
-            return Condiment::cost();
-
+        if (beverage->getSize() <= 16)
+            return beverage->cost()  + 0.4;
+        else if (beverage->getSize() <= 20)
+            return beverage->cost()  + 0.8;
+        else 
+            return beverage->cost()  + 1.2;
     }
 };
 
 void printCoffee(Beverage *b)
 {
-    cout << b->getSize() << "oz " << b->getDescription() << ": $" << b->cost() << endl;
+    cout << endl << b->getSize() << "oz " << b->getDescription() 
+         << ": $" << b->cost() << endl << endl;
 }
+
 int main ()
 {
-    Beverage *b1 = new Espresso();
-    Beverage *b2 = new SoyMilk(b1);
-    Beverage *b3 = new SoyMilk(b2);
-    Beverage *b4 = new Whip(b3);
-    Beverage *b5 = new SoyMilk(b4);
+    Beverage *espresso = new Espresso();
+    Beverage *espresso_soy_milk = new SoyMilk(espresso);
+    Beverage *espresso_double_soy_milk = new SoyMilk(espresso_soy_milk);
+    printCoffee(espresso_double_soy_milk);
 
-    printCoffee(b5);
-    b5->setSize(20);
-    printCoffee(b5);
-    b5->setSize(24);
-    printCoffee(b5);
+    espresso_double_soy_milk->setSize(20);
+    printCoffee(espresso_double_soy_milk);
 
+    Beverage *espresso_double_soy_milk_whipped= new Whip(espresso_double_soy_milk);
+    printCoffee(espresso_double_soy_milk_whipped);
     return 1;
 }
