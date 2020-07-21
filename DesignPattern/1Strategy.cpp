@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 
 using namespace std;
 
@@ -22,12 +23,12 @@ class FlyNoWay : public FlyBehavior
 class Duck 
 {
   protected:
-    FlyBehavior *flyBehavior;
+    unique_ptr<FlyBehavior> flyBehavior;
   public:
     virtual void display() = 0;
     void performFly() {flyBehavior->fly();}
-    virtual void setFlyBehavior(FlyBehavior *flyBehaviorIn) {
-        flyBehavior = flyBehaviorIn;
+    virtual void setFlyBehavior(unique_ptr<FlyBehavior> flyBehaviorIn) {
+        flyBehavior = move(flyBehaviorIn);
     }
     virtual ~Duck() {};
 };
@@ -39,8 +40,7 @@ class MallardDuck: public Duck
         cout << "MallardDuck cannot set fly behavior.\n";
     }
   public:
-    MallardDuck() {flyBehavior = new FlyWithWings();}
-    ~MallardDuck() {delete flyBehavior;}
+    MallardDuck() {flyBehavior = make_unique<FlyWithWings>();}
     void display() {cout << "\nI'm a Mallard Duck\n";}
 };
 
@@ -51,34 +51,30 @@ class RubberDuck: public Duck
         cout << "RubberDuck cannot set fly behavior.\n";
     }
   public:
-    RubberDuck() {flyBehavior = new FlyNoWay();}
-    ~RubberDuck() {delete flyBehavior;}
+    RubberDuck() {flyBehavior = make_unique<FlyNoWay>();}
     void display() {cout << "\nI'm a Rubber Duck\n";}
 };
 
 
 int main ()
 {
-    Duck *d1 = new MallardDuck ;
+    unique_ptr<Duck> d1 = make_unique<MallardDuck>();
     d1->display();
     d1->performFly();
-    delete d1;
 
-    Duck *d2 = new RubberDuck;
+    unique_ptr<Duck> d2 = make_unique<RubberDuck>();
     d2->display();
     d2->performFly();
-    // Duck pointer CANNOT change fly behavior
-    d2->setFlyBehavior(new FlyWithWings); 
+    // Duck pointer CAN change fly behavior
+    d2->setFlyBehavior(make_unique<FlyWithWings>()); 
     d2->performFly();
-    delete d2;
     
-    RubberDuck *d3 = new RubberDuck;
+    unique_ptr<RubberDuck> d3 = make_unique<RubberDuck>();
     d3->display();
     d3->performFly();
     // RubberDuck pointer CANNOT call setFlyBehavior because it is hidden.
-    //d3->setFlyBehavior(new FlyWithWings);
+    //d3->setFlyBehavior(make_uniqu<eFlyWithWings>());
     //d3->performFly();
-    delete d3;
 
     return 1;
 }
