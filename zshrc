@@ -71,5 +71,3 @@ export PATH
 
 # Setting to use the Git from the Github
 export PATH="/usr/local/git/bin:$PATH"
-
-
